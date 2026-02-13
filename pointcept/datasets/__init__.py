@@ -20,5 +20,8 @@ from .waymo import WaymoDataset
 from .modelnet import ModelNetDataset
 from .shapenet_part import ShapeNetPartDataset
 
+# dental
+from .teeth3ds import Teeth3DSDataset
+
 # dataloader
 from .dataloader import MultiDatasetDataloader
