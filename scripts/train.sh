@@ -16,37 +16,50 @@ NUM_MACHINE=1
 DIST_URL="auto"
 
 
-while getopts "p:d:c:n:w:g:m:r:" opt; do
-  case $opt in
-    p)
-      PYTHON=$OPTARG
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -p)
+      PYTHON="$2"
+      shift 2
       ;;
-    d)
-      DATASET=$OPTARG
+    -d)
+      DATASET="$2"
+      shift 2
       ;;
-    c)
-      CONFIG=$OPTARG
+    -c)
+      CONFIG="$2"
+      shift 2
       ;;
-    n)
-      EXP_NAME=$OPTARG
+    -n)
+      EXP_NAME="$2"
+      shift 2
       ;;
-    w)
-      WEIGHT=$OPTARG
+    -w)
+      WEIGHT="$2"
+      shift 2
       ;;
-    r)
-      RESUME=$OPTARG
+    -r)
+      RESUME="$2"
+      shift 2
       ;;
-    g)
-      NUM_GPU=$OPTARG
+    -g)
+      NUM_GPU="$2"
+      shift 2
       ;;
-    m)
-      NUM_MACHINE=$OPTARG
+    -m)
+      NUM_MACHINE="$2"
+      shift 2
       ;;
-    \?)
-      echo "Invalid option: -$OPTARG"
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
       ;;
   esac
 done
+EXTRA_ARGS="$@"
 
 if [ "${NUM_GPU}" = 'None' ]
 then
@@ -59,6 +72,7 @@ echo "Dataset: $DATASET"
 echo "Config: $CONFIG"
 echo "GPU Num: $NUM_GPU"
 echo "Machine Num: $NUM_MACHINE"
+echo "Extra Args: $EXTRA_ARGS"
 
 if [ -n "$SLURM_NODELIST" ]; then
   MASTER_HOSTNAME=$(scontrol show hostname "$SLURM_NODELIST" | head -n 1)
@@ -102,7 +116,7 @@ then
     --num-machines "$NUM_MACHINE" \
     --machine-rank ${SLURM_NODEID:-0} \
     --dist-url ${DIST_URL} \
-    --options save_path="$EXP_DIR"
+    --options save_path="$EXP_DIR" $EXTRA_ARGS
 else
     $PYTHON "$CODE_DIR"/tools/$TRAIN_CODE \
     --config-file "$CONFIG_DIR" \
@@ -110,5 +124,5 @@ else
     --num-machines "$NUM_MACHINE" \
     --machine-rank ${SLURM_NODEID:-0} \
     --dist-url ${DIST_URL} \
-    --options save_path="$EXP_DIR" resume="$RESUME" weight="$WEIGHT"
+    --options save_path="$EXP_DIR" resume="$RESUME" weight="$WEIGHT" $EXTRA_ARGS
 fi

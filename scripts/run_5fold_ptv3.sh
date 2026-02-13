@@ -37,7 +37,7 @@ for FOLD in 0 1 2 3 4; do
 
     # No weight argument (Training from scratch)
     sh scripts/train.sh -p python -g ${NUM_GPU} -d ${DATASET} -c ${CONFIG} -n ${EXP_NAME} \
-        --options "data.train.split=${TRAIN_SPLIT}" "data.val.split=${VAL_SPLIT}" "data.test.split=${VAL_SPLIT}"
+        -- "data.train.split=${TRAIN_SPLIT}" "data.val.split=${VAL_SPLIT}" "data.test.split=${VAL_SPLIT}"
 
     echo "Fold ${FOLD} finished."
     echo ""

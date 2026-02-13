@@ -72,7 +72,7 @@ scheduler = dict(
     div_factor=10.0,
     final_div_factor=1000.0,
 )
-# No param_dicts for backbone (train all from scratch)
+param_dicts = [dict(keyword="block", lr=0.0006)]
 
 # dataset settings
 dataset_type = "Teeth3DSDataset"
